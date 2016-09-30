@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="bower_components/toastr/toastr.css" />
+﻿<link rel="stylesheet" href="bower_components/toastr/toastr.css" />
 <link rel="stylesheet" type="text/css" href="bower_components/semantic/dist/semantic.css">
 <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
 <link rel="stylesheet" href="ng-select-city.css" />
@@ -6,7 +6,8 @@
 <body ng-app="cityApp">
 	<div ng-controller="cityController" class="index">
 	
-		<ng-select-city code="citycode" detail="fromDetail"></ng-select-city>
+	  <div ng-select-city template="myDirectivesCustomTemplate.html"></div>
+		<!-- <ng-select-city code="citycode" detail="fromDetail"></ng-select-city> -->
 		
 	</div>
 </body>
@@ -32,4 +33,96 @@
 <script src="services/GeoService.js"></script>
 <script src="services/MapIconService.js"></script>
 <script src="filter/areaname.js"></script>
+<script type="text/ng-template" id="myDirectivesCustomTemplate.html">
+ <input class="entry" type="text" placeholder="" style="width: auto" ng-readonly="true" ng-model="detail">
+              <div class="ui modal addressChoice" style="width: 1100px!important;">
+              <span class="actions modal-icon fr" style="position: absolute;right: 0;background: none;top: -1em;">
+                  </span>
+              <div class="header bg-0 width-58 fl" style="border: none !important;">地址选取</div>
+              <div class="header bg-0 width-38 fr" style="border: none !important;">坐标选择</div>
+              <div class="content" style="clear: both;padding-top: 0;padding: 1.5rem !important;">
+               <div class="ui grid">
+                 <div class="ten wide column">
+                   <div class="ui grid" style="border-bottom: 1px dashed #999;padding-bottom: 1em;">
+                    <div class="ten wide column"  style="padding-right: 0!important;">
+                      <city code="cityCode"  callback="callback(address,code,type)">
+                      </city>
+               </div>
+                <div class="six wide column padding-0" style="width: 33%!important;">
+                   <div class="ui search">
+                      <div class="ui icon input">
+                         <input ng-model="searchField" type="text" placeholder="详细地址" style="height: 30px !important;margin-top: 0 !important;">
+                          <button class="ui icon button" ng-click="searchAddress()" style="height: 30px">
+                          <i class="search icon" style="margin-top: -5px"></i>
+                           </button>
+                         </div>
+                        <div class="results"></div>
+                     </div>
+                  </div>
+               </div>
+              <div class="sixteen wide column" style="margin-top: 1em;"><button ng-click="clearCache()">清空缓存</button>
+               <div class="ui tabular menu" style="padding: 0.8em 0 0 0.8em;height: 36px;">
+                <a class="item active" style="padding: 0em 2em !important;" data-tab="commonAddress">
+                 <div>常用</div>
+              </a>
+              <a class="item " style="padding: 0em 2em !important;" data-tab="historyAddress" ng-click="historyAddressSearch()">
+                <div>历史</div>
+              </a>
+              <a class="item " style="padding: 0em 2em !important;" data-tab="searchResult" id="searchResult" ng-click="addressSearch()">
+                <div>搜索结果</div>
+              </a>
+              </div>
+              <div class="ui bottom attached tab segment active mt-1 commonHeightBoxScroll" id="commonAddressBoxScroll"
+                style="border: 0 !important;" data-tab="commonAddress">
+                <table class="ui very basic table">
+                  <tbody>
+                  <tr ng-repeat="item in commonAddreses" ng-class="{true:'choose',false:}[id==item.id]" ng-click="selectCommonAddress(item)">
+                    <td><div ng-class="{true:'ui label red',false:'ui label'}[id==item.id] ">{{$index+1}}</div></td>
+                    <td>{{item.code}}</td>
+                    <td>{{item.detail}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="ui bottom attached tab segment mt-1 commonHeightBoxScroll" id="historyAddressBoxScroll"
+                 style="border: 0 !important;overflow :scroll;overflow-x: hidden;padding: 1em 0;margin-top: 15px" data-tab="historyAddress">
+                <table class="ui very basic table">
+                  <tbody>
+                  <tr ng-repeat="item in historyAddresses" ng-class="{true:'choose',false:}[historyAddressId==item._id]" ng-click="selectHistoryAddress(item)">
+                    <td><div ng-class="{true:'ui label red',false:'ui label'}[historyAddressId==item._id] ">{{$index+1}}</div></td>
+                    <td>{{item.code}}</td>
+                   <td>{{item.detail}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="ui bottom attached tab segment mt-1 commonHeightBoxScroll"
+                 style="border: 0 !important;overflow :scroll;overflow-x: hidden;padding: 1em 0;margin-top: 15px" data-tab="searchResult">
+                <table class="ui very basic table">
+                  <tbody>
+                  <tr ng-repeat="item in searchResult" ng-class="{true:'choose',false:}[uid==item.uid]" ng-click="selectAddress(item.uid)">
+                    <td style="width: 35px"><div ng-class="{true:'ui label red',false:'ui label'}[uid==item.uid] ">{{$index + 1}}</div>
+                    <td><div style="color: rgb(51,133,255);">{{item.name}}</div>
+                    <div>{{item.address}}</div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              </div>
+              <div class="sixteen wide column">
+              <button class="ui teal button" ng-click="sure()">确定</button>
+              <button class="ui red button" ng-click="cancel()">取消</button>
+              </div>
+              </div>
+              <div class="six wide column">
+              <div>
+              <div id="map" class="car-map-height"  style="min-height: 522px;height: 372px;"></div>
+              </div>
+              </div>
+              </div>
+              </div>
+              </div>
+</script>
 <script src="ng-select-city.js"></script>
+
